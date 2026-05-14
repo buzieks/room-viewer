@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Webcam Viewer - Motion Detection</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📹 Live Webcam Viewer</h1>
+            <div class="status-indicator">
+                <div id="status-light" class="status-light"></div>
+                <span id="status-text">Connecting...</span>
+            </div>
+        </header>
+
+        <main>
+            <div class="video-section">
+                <div class="video-container">
+                    <img id="video-stream" src="/video_feed" alt="Live Video Stream" class="video-stream">
+                    <div id="motion-overlay" class="motion-overlay hidden">
+                        <span class="motion-badge">⚠️ MOTION DETECTED</span>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <button id="toggle-motion-boxes" class="btn btn-secondary">Show Motion Detection</button>
+                    <button id="clear-buffer" class="btn btn-warning">Clear Buffer</button>
+                </div>
+            </div>
+
+            <div class="info-panel">
+                <div class="info-section">
+                    <h3>📊 System Status</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label>Motion Status:</label>
+                            <span id="motion-status">No motion</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Buffered Frames:</label>
+                            <span id="buffered-frames">0</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Total Frames:</label>
+                            <span id="total-frames">0</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Motion Events:</label>
+                            <span id="motion-events-count">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h3>⏮️ Rollback Control</h3>
+                    <div class="rollback-controls">
+                        <label for="rollback-seconds">Seconds to Rollback:</label>
+                        <div class="slider-container">
+                            <input type="range" id="rollback-seconds" min="1" max="10" value="5" class="slider">
+                            <span id="rollback-value">5s</span>
+                        </div>
+                        <button id="rollback-btn" class="btn btn-primary">Get Rollback Frames</button>
+                        <div id="rollback-info" class="info-text hidden"></div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h3>🎯 Motion Events</h3>
+                    <div id="motion-events-list" class="events-list">
+                        <p class="placeholder">No motion events recorded yet</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Live Webcam Viewer with Motion Detection • Raspberry Pi Compatible</p>
+            <p id="last-update">Last updated: --:--:--</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

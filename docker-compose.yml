@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  webcam-viewer:
+    build: .
+    container_name: webcam-viewer
+    ports:
+      - "5000:5000"
+    devices:
+      # Mount USB camera device
+      - /dev/video0:/dev/video0
+    volumes:
+      # Optional: Mount recordings directory
+      - ./recordings:/app/recordings
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    # For Raspberry Pi, use the correct base image
+    # Uncomment if using Docker on Raspberry Pi
+    # image: arm32v7/python:3.9-slim

@@ -1,0 +1,17 @@
+[Unit]
+Description=Webcam Viewer Service
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/room-viewer
+ExecStart=/home/pi/room-viewer/venv/bin/python3 /home/pi/room-viewer/backend/app.py
+Restart=on-failure
+RestartSec=10
+
+# Environment variables
+Environment="PYTHONUNBUFFERED=1"
+
+[Install]
+WantedBy=multi-user.target
