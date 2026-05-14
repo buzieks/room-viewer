@@ -2,83 +2,138 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Webcam Viewer - Motion Detection</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="apple-mobile-web-app-capable" content="true">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#667eea">
+    <meta name="description" content="Live webcam viewer with motion detection and rollback capability. Perfect for Raspberry Pi 5.">
+    <title>Live Webcam Viewer</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>📹 Live Webcam Viewer</h1>
-            <div class="status-indicator">
-                <div id="status-light" class="status-light"></div>
-                <span id="status-text">Connecting...</span>
+    <div class="app-wrapper">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="header-title">
+                    <h1>📹 Webcam Viewer</h1>
+                </div>
+                <div class="status-indicator" role="status" aria-live="polite">
+                    <div id="status-light" class="status-light" aria-hidden="true"></div>
+                    <span id="status-text" class="status-text">Connecting...</span>
+                </div>
             </div>
         </header>
 
-        <main>
-            <div class="video-section">
-                <div class="video-container">
-                    <img id="video-stream" src="/video_feed" alt="Live Video Stream" class="video-stream">
-                    <div id="motion-overlay" class="motion-overlay hidden">
-                        <span class="motion-badge">⚠️ MOTION DETECTED</span>
-                    </div>
-                </div>
-
-                <div class="controls">
-                    <button id="toggle-motion-boxes" class="btn btn-secondary">Show Motion Detection</button>
-                    <button id="clear-buffer" class="btn btn-warning">Clear Buffer</button>
-                </div>
-            </div>
-
-            <div class="info-panel">
-                <div class="info-section">
-                    <h3>📊 System Status</h3>
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <label>Motion Status:</label>
-                            <span id="motion-status">No motion</span>
-                        </div>
-                        <div class="info-item">
-                            <label>Buffered Frames:</label>
-                            <span id="buffered-frames">0</span>
-                        </div>
-                        <div class="info-item">
-                            <label>Total Frames:</label>
-                            <span id="total-frames">0</span>
-                        </div>
-                        <div class="info-item">
-                            <label>Motion Events:</label>
-                            <span id="motion-events-count">0</span>
+        <!-- Main Content -->
+        <main class="app-main">
+            <!-- Video Section -->
+            <section class="video-section">
+                <div class="video-wrapper">
+                    <div class="video-container">
+                        <img id="video-stream" src="/video_feed" alt="Live video stream from webcam" class="video-stream" loading="lazy">
+                        <div id="motion-overlay" class="motion-overlay hidden" role="alert">
+                            <span class="motion-badge">
+                                <span class="pulse-dot"></span>
+                                MOTION DETECTED
+                            </span>
                         </div>
                     </div>
                 </div>
 
-                <div class="info-section">
-                    <h3>⏮️ Rollback Control</h3>
-                    <div class="rollback-controls">
-                        <label for="rollback-seconds">Seconds to Rollback:</label>
-                        <div class="slider-container">
-                            <input type="range" id="rollback-seconds" min="1" max="10" value="5" class="slider">
-                            <span id="rollback-value">5s</span>
+                <!-- Primary Controls -->
+                <div class="controls-section">
+                    <div class="button-group">
+                        <button id="toggle-motion-boxes" class="btn btn-secondary" title="Toggle motion detection visualization">
+                            <span class="btn-icon">👁️</span>
+                            <span class="btn-text">Motion Detection</span>
+                        </button>
+                        <button id="clear-buffer" class="btn btn-warning" title="Clear all buffered frames">
+                            <span class="btn-icon">🗑️</span>
+                            <span class="btn-text">Clear Buffer</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sidebar/Info Panel -->
+            <aside class="info-sidebar">
+                <!-- Status Card -->
+                <div class="card status-card">
+                    <div class="card-header">
+                        <h2 class="card-title">System Status</h2>
+                        <div class="status-badge" id="status-badge">Online</div>
+                    </div>
+                    <div class="card-content">
+                        <div class="stat-grid">
+                            <div class="stat-item">
+                                <span class="stat-label">Motion</span>
+                                <span id="motion-status" class="stat-value">No motion</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Buffered</span>
+                                <span id="buffered-frames" class="stat-value">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Total</span>
+                                <span id="total-frames" class="stat-value">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Events</span>
+                                <span id="motion-events-count" class="stat-value">0</span>
+                            </div>
                         </div>
-                        <button id="rollback-btn" class="btn btn-primary">Get Rollback Frames</button>
-                        <div id="rollback-info" class="info-text hidden"></div>
                     </div>
                 </div>
 
-                <div class="info-section">
-                    <h3>🎯 Motion Events</h3>
-                    <div id="motion-events-list" class="events-list">
-                        <p class="placeholder">No motion events recorded yet</p>
+                <!-- Rollback Card -->
+                <div class="card rollback-card">
+                    <div class="card-header">
+                        <h2 class="card-title">Rollback Control</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="rollback-controls">
+                            <label for="rollback-seconds" class="control-label">Seconds to Rollback</label>
+                            <div class="slider-wrapper">
+                                <input 
+                                    type="range" 
+                                    id="rollback-seconds" 
+                                    min="1" 
+                                    max="10" 
+                                    value="5" 
+                                    class="slider"
+                                    aria-label="Seconds to rollback"
+                                >
+                                <span id="rollback-value" class="slider-value" aria-live="polite">5s</span>
+                            </div>
+                            <button id="rollback-btn" class="btn btn-primary btn-block" title="Retrieve frames from the selected time period">
+                                Get Rollback Frames
+                            </button>
+                            <div id="rollback-info" class="info-message hidden" role="status"></div>
+                        </div>
                     </div>
                 </div>
-            </div>
+
+                <!-- Motion Events Card -->
+                <div class="card events-card">
+                    <div class="card-header">
+                        <h2 class="card-title">Motion Events</h2>
+                    </div>
+                    <div class="card-content">
+                        <div id="motion-events-list" class="events-list" role="region" aria-label="Motion events list">
+                            <p class="placeholder">No motion events yet</p>
+                        </div>
+                    </div>
+                </div>
+            </aside>
         </main>
 
-        <footer>
-            <p>Live Webcam Viewer with Motion Detection • Raspberry Pi Compatible</p>
-            <p id="last-update">Last updated: --:--:--</p>
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="footer-content">
+                <p class="footer-text">Live Webcam Viewer with Motion Detection</p>
+                <p class="footer-time" id="last-update">Last updated: --:--:--</p>
+            </div>
         </footer>
     </div>
 
